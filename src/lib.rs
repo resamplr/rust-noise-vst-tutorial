@@ -10,11 +10,8 @@ use rand::random;
 
 #[derive(Default)]
 struct Whisper {
-    // We added a counter in our plugin struct.  It's important to note
-    // that this value is wrapped in a Cell, which allows us to have 
-    // interior mutability.  If you're unsure what that means, check out this:
-    // https://ricardomartins.cc/2016/06/08/interior-mutability
-    notes: std::cell::Cell<u8>
+    // Added a counter in our plugin struct. 
+    notes: u8
 }
 
 // We're implementing a trait `Plugin` that does all the VST-y stuff for us.
@@ -59,10 +56,10 @@ impl Plugin for Whisper {
                     match ev.data[0] {
 
                         // if note on, increment our counter
-                        144 => self.notes.set(self.notes.get() + 1u8),
+                        144 => self.notes += 1u8,
 
                         // if note off, decrement our counter
-                        128 => self.notes.set(self.notes.get() - 1u8),
+                        128 => self.notes -= 1u8,
                         _ => (),
                     }
                     // if we cared about the pitch of the note, it's stored in `ev.data[1]`.
@@ -88,7 +85,7 @@ impl Plugin for Whisper {
             for (_, output_sample) in input_buffer.iter().zip(output_buffer) {
 
                 // if our notes incrementer is greater than 0, that means a note is currently being pressed.
-                if self.notes.get() > 0 {
+                if self.notes > 0 {
 
                     // Finally, we change the value of each individual sample if a note is on
                     *output_sample = (random::<f32>() - 0.5f32) * 2f32;
