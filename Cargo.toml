@@ -1,0 +1,12 @@
+[package]
+name = "whisper"
+version = "0.1.0"
+authors = ["doomy <alexanderpaullozada@gmail.com>"]
+
+[dependencies]
+vst = "0.0.1"
+rand = "0.3"
+
+[lib]
+name = "whisper"
+crate-type = ["cdylib"]
