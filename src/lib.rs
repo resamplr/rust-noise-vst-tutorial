@@ -94,9 +94,9 @@ impl Plugin for Whisper {
         }
     }
 
-    // It's good to tell our host what our plugin can do
+    // It's good to tell our host what our plugin can do.
     // Some VST hosts might not send any midi events to our plugin
-    // if we don't explicitely tell them that the plugin can handle them.
+    // if we don't explicitly tell them that the plugin can handle them.
     fn can_do(&self, can_do: CanDo) -> Supported {
         match can_do {
             // Tell our host that the plugin supports receiving MIDI messages
