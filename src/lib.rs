@@ -2,10 +2,10 @@
 extern crate vst;
 extern crate rand;
 
-use vst::plugin::{Info, Plugin, Category};
+use vst::plugin::{Info, Plugin, Category, CanDo};
 use vst::buffer::AudioBuffer;
 use vst::event::Event;
-use vst::api::Events;
+use vst::api::{Events, Supported};
 use rand::random;
 
 #[derive(Default)]
@@ -91,6 +91,18 @@ impl Plugin for Whisper {
                 // -1.0 to 1.0.
                 *output_sample = (random::<f32>() - 0.5f32) * 2f32;
             }
+        }
+    }
+
+    // It's good to tell our host what our plugin can do
+    // Some VST hosts might not send any midi events to our plugin
+    // if we don't explicitely tell them that the plugin can handle them.
+    fn can_do(&self, can_do: CanDo) -> Supported {
+        match can_do {
+            // Tell our host that the plugin supports receiving MIDI messages
+            CanDo::ReceiveMidiEvent => Supported::Yes,
+            // Maybe it also supports ather things
+            _ => Supported::Maybe,
         }
     }
 }
