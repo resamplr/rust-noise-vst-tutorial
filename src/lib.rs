@@ -71,15 +71,22 @@ impl Plugin for Whisper {
 
     fn process(&mut self, buffer: &mut AudioBuffer<f32>) {
 
-        // We only want to process *anything* if a note is
-        // being held.  Else, we can return early and skip
-        // processing anything!
-        if self.notes == 0 { return }
-        
         // `buffer.split()` gives us a tuple containing the 
         // input and output buffers.  We only care about the
         // output, so we can ignore the input by using `_`.
         let (_, output_buffer) = buffer.split();
+
+        // We only want to process *anything* if a note is being held.
+        // Else, we can fill the output buffer with silence.
+        if self.notes == 0 {
+            for output_channel in output_buffer.into_iter() {
+                // Let's iterate over every sample in our channel.
+                for output_sample in output_channel {
+                    *output_sample = 0.0;
+                }
+            }
+            return;
+        }
 
         // Now, we want to loop over our output channels.  This
         // includes our left and right channels (or more, if you
@@ -87,8 +94,8 @@ impl Plugin for Whisper {
         for output_channel in output_buffer.into_iter() {
             // Let's iterate over every sample in our channel.
             for output_sample in output_channel {
-                // For every sample, we want to add a random value from
-                // -1.0 to 1.0.
+                // For every sample, we want to generate a random value
+                // from -1.0 to 1.0.
                 *output_sample = (random::<f32>() - 0.5f32) * 2f32;
             }
         }
