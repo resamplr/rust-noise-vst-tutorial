@@ -74,7 +74,7 @@ impl Plugin for Whisper {
         // `buffer.split()` gives us a tuple containing the 
         // input and output buffers.  We only care about the
         // output, so we can ignore the input by using `_`.
-        let (_, output_buffer) = buffer.split();
+        let (_, mut output_buffer) = buffer.split();
 
         // We only want to process *anything* if a note is being held.
         // Else, we can fill the output buffer with silence.
